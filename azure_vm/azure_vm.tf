@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "azurerm" {
-  skip_provider_registration = true # This is only required when the User, Service Principal, or Identity running Terraform lacks the permissions to register Azure Resource Providers.
+  skip_provider_registration = true
   features {}
 }
 
@@ -56,13 +56,14 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+
 # Create the actual VM itself
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "cloud-1-vm-hakahmed"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  size                = "Standard_B1ls"
-  admin_username      = "hakahmed"
+  name                  = "cloud-1-vm-hakahmed"
+  resource_group_name   = azurerm_resource_group.rg.name
+  location              = azurerm_resource_group.rg.location
+  size                  = "Standard_B2s"
+  admin_username        = "hakahmed"
   network_interface_ids = [
     azurerm_network_interface.nic.id,
   ]
