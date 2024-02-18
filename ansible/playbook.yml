@@ -1,0 +1,14 @@
+- name: "Inception"
+  hosts: "azure_vm"
+  become: true
+
+  roles:
+    - role: "geerlingguy.docker"
+
+  tasks:
+    - name: "Update all packages"
+      ansible.builtin.apt:
+        name:
+          - git
+          - vim
+        state: present
