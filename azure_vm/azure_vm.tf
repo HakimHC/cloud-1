@@ -86,4 +86,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   disable_password_authentication = true
+
+  tags {
+    project = "cloud-1"
+  }
 }
