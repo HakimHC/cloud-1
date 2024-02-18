@@ -33,3 +33,10 @@ terraform.rc
 # PyCharm
 
 .idea/*
+
+
+# Environment
+
+.env
+.env.inception
+inception/
