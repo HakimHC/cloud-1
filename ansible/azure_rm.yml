@@ -1,0 +1,4 @@
+plugin: "azure_rm"
+auth_source: auto
+keyed_groups:
+ - key: tags.project
