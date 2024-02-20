@@ -1,0 +1,10 @@
+{
+  "inventory": "./ansible/azure_rm.yml",
+  "playbook": "./ansible/playbook.yml",
+
+  "terraform": {
+    "base_dir": "./azure_vm",
+    "run_apply": true,
+    "replace_inventory": true
+  }
+}
