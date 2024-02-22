@@ -1,6 +1,20 @@
 {
-  "inventory": "./ansible/azure_rm.yml",
-  "playbook": "./ansible/playbook.yml",
+  "ansible": {
+    "playbook_path": "./ansible/playbook.yml",
+    "extra_vars": {
+      "environment": "dev"
+    }
+  },
+
+  "inventory": {
+    "template_path": "./ansible/templates/inventory.j2",
+    "inventory_path": "./ansible/inventory.ini",
+    "hosts":[{
+      "name": "vm1",
+      "ip": "localhost",
+      "user": "hakahmed"
+    }]
+  },
 
   "terraform": {
     "base_dir": "./azure_vm",
