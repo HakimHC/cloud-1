@@ -1,6 +1,11 @@
+import os
+import subprocess
+import sys
+
 from constants import PROJECT_ROOT
 from pathlib import Path
 import logging
+from executor import CommandExecutor
 
 
 class TerraformHandler:
@@ -13,11 +18,16 @@ class TerraformHandler:
 
         if self.apply:
             self.__commands += ['terraform apply -auto-approve']
+            self.run_apply()
 
-        self.__execute_commands(self.__commands)
+        CommandExecutor.execute_commands(
+            commands=['terraform output'],
+            working_directory=self.terraform_dir
+        )
 
-    def apply(self):
-        pass
+    def run_apply(self):
+        CommandExecutor.execute_commands(
+            commands=self.__commands,
+            working_directory=self.terraform_dir
+        )
 
-    def __execute_commands(self, commands: list[str]):
-        logging.debug(f'Executing commands: {commands}')
