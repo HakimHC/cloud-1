@@ -1,4 +1,10 @@
 {
+  "logging": {
+    "log_file": "./logs/test.log",
+    "level": "DEBUG",
+    "format": "[%(asctime)s] - %(levelname)s - %(message)s"
+  },
+
   "ansible": {
     "playbook_path": "./ansible/playbook.yml",
     "extra_vars": {
@@ -17,7 +23,7 @@
   },
 
   "terraform": {
-    "base_dir": "./azure_vm",
+    "base_dir": "./terraform",
     "run_apply": true,
     "replace_inventory": true
   }
