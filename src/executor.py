@@ -8,7 +8,7 @@ from constants import PROJECT_ROOT
 
 class CommandExecutor:
     @staticmethod
-    def execute_commands(commands: list[str], working_directory=None):
+    def execute_commands(commands: list[str], working_directory=None, capture=False):
         output = []
         logging.debug(f'Executing commands: {commands}')
 
@@ -16,16 +16,24 @@ class CommandExecutor:
             os.chdir(working_directory)
 
         for command in commands:
-            result = subprocess.run(
-                command,
-                shell=True,
-                capture_output=True,
-                text=True
-            )
-            print(result.stdout)
+            if capture:
+                result = subprocess.run(
+                    command,
+                    shell=True,
+                    capture_output=True,
+                    text=True
+                )
+            else:
+                result = subprocess.run(
+                    command,
+                    shell=True,
+                    stdout=sys.stdout,
+                    stderr=sys.stderr
+                )
+
             output.append(result.stdout)
             if result.returncode != 0:
-                print(result.stderr, file=sys.stderr)
+                logging.error(result.stderr)
                 exit(1)
 
         os.chdir(PROJECT_ROOT)

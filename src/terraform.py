@@ -1,9 +1,4 @@
-import os
-import subprocess
-import sys
-
 from constants import PROJECT_ROOT
-from pathlib import Path
 import logging
 from executor import CommandExecutor
 import re
@@ -18,21 +13,24 @@ class TerraformHandler:
         self.__commands = ['terraform init']
 
         if self.apply:
+            logging.info('Applying Terraform')
             self.__commands += ['terraform apply -auto-approve']
             self.run_apply()
-
-        self.get_output_info()
 
     def run_apply(self):
         CommandExecutor.execute_commands(
             commands=self.__commands,
-            working_directory=self.terraform_dir
+            working_directory=self.terraform_dir,
+            capture=False
         )
 
-    def get_output_info(self) -> dict:
+    def get_output_info(self) -> list[dict]:
+        logging.info('Getting terraform output information')
+
         output = CommandExecutor.execute_commands(
             commands=['terraform output'],
-            working_directory=self.terraform_dir
+            working_directory=self.terraform_dir,
+            capture=True
         )[0]
 
         parsed_output = []
@@ -44,5 +42,6 @@ class TerraformHandler:
         for var in parsed_output:
             result[var[0]] = var[1]
 
-        return result
+        logging.info(f'Host information captured: {result}')
+        return [result]
 

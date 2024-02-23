@@ -11,8 +11,8 @@ class Logger:
     def setup_logging(self):
         logging_config = self.config.get('logging', {})
         log_file = logging_config.get('log_file', 'deployment.log')
-        log_level = logging_config.get('log_level', 'INFO').upper()
-        log_format = logging_config.get('log_format', '[%(asctime)s] - %(levelname)s - %(message)s')
+        log_level = logging_config.get('level', 'INFO').upper()
+        log_format = logging_config.get('format', '[%(asctime)s] - %(levelname)s - %(message)s')
 
         logging.basicConfig(filename=log_file, level=log_level, format=log_format, filemode='a')
 

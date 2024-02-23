@@ -15,8 +15,16 @@ class Config:
         self.inventory = self.config.get('inventory')
         self.ansible = self.config.get('ansible')
         self.terraform = self.config.get('terraform')
+        self.logging = self.config.get('logging')
 
-        self.__validate_terraform_block()
+        if self.terraform:
+            self.__validate_terraform_block()
+
+        self.__validate_ansible_block()
+        self.__validate_inventory_block()
+
+        if self.logging:
+            self.__validate_logging_block()
 
     def __read_config(self):
         try:
@@ -37,7 +45,7 @@ class Config:
         Config.__validate_config_block(
             self.terraform,
             context='terraform',
-            required_fields=['base_dir', 'run_apply', 'replace_inventory'],
+            required_fields=['base_dir', 'apply'],
             optional_fields=[]
         )
 
@@ -47,6 +55,31 @@ class Config:
             context='ansible',
             required_fields=['playbook_path'],
             optional_fields=['extra_vars']
+        )
+
+    def __validate_inventory_block(self):
+        Config.__validate_config_block(
+            self.inventory,
+            context='inventory',
+            required_fields=['template_path', 'inventory_path'],
+            optional_fields=['hosts']
+        )
+
+        if self.inventory.get('hosts'):
+            for host in self.inventory.get('hosts'):
+                Config.__validate_config_block(
+                    host,
+                    context='inventory.hosts',
+                    required_fields=['ip_address', 'user'],
+                    optional_fields=[]
+                )
+
+    def __validate_logging_block(self):
+        Config.__validate_config_block(
+            self.logging,
+            context='logging',
+            required_fields=[],
+            optional_fields=['log_file', 'level', 'format']
         )
 
     @staticmethod
@@ -70,3 +103,5 @@ class Config:
         if missing_required_fields:
             raise ValueError(f"Missing required fields in {context} block: {missing_required_fields}")
 
+    def __str__(self):
+        return self.raw_data
