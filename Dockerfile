@@ -15,7 +15,9 @@ RUN  apt update
 
 RUN  apt-get install -y terraform
 
-RUN ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa
+RUN pip install 'ansible[azure]'
+
+RUN ansible-galaxy role install geerlingguy.docker
 
 COPY . /app
 

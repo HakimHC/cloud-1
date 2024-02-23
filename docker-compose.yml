@@ -5,3 +5,5 @@ services:
     build: ./
     env_file:
       - ./.env
+    volumes:
+      - "./azure_vm:/app/azure_vm"
