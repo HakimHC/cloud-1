@@ -39,7 +39,6 @@ terraform.rc
 
 .env
 .env.inception
-inception/
 
 .ssh/
 
