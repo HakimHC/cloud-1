@@ -1,14 +1,38 @@
 - name: "Inception"
-  hosts: "azure_vm"
+  hosts: "all"
   become: true
 
   roles:
     - role: "geerlingguy.docker"
 
   tasks:
-    - name: "Update all packages"
+    - name: "Copy Inception Source"
+      ansible.builtin.copy:
+        src: ../inception.tar.gz
+        dest: /
+
+    - name: "Decompress Inception Source"
+      ansible.builtin.shell: tar -xzvf /inception.tar.gz -C /
+
+    - name: "Copy Inception Environment"
+      ansible.builtin.copy:
+        src: ../.env.inception
+        dest: /inception/srcs/.env
+
+    # TODO: make it 'safer' by not replacing localhost rather replacing the line
+    - name: "Replace the host variable in environment"
+      ansible.builtin.shell: sed -i "s/localhost/{{ ansible_host }}/" /inception/srcs/.env
+
+    - name: "Install the 'make' binary"
       ansible.builtin.apt:
-        name:
-          - git
-          - vim
+        name: make
         state: present
+
+    - name: "Change the user variable in the Makefile"
+      ansible.builtin.shell: sed -i "s/hakahmed/{{ ansible_user }}/" /inception/Makefile
+
+    - name: "Start the application"
+      ansible.builtin.shell: make dt -C /inception
+      register: out
+
+    - debug: var=out.stdout_lines

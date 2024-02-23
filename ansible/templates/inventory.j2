@@ -1,0 +1,4 @@
+[all]
+{% for host in hosts %}
+{{ host.ip_address }}  ansible_user="{{ host.user }}"
+{% endfor %}
