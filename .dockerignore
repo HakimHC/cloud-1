@@ -37,6 +37,5 @@ terraform.rc
 
 # Environment
 
-.env
-.env.inception
 inception/
+logs/
