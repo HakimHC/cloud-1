@@ -45,3 +45,9 @@ inception/
 
 logs/
 
+
+# Media files
+json-file.svg
+json-1.png
+diagram.py
+diagrams_image.png
