@@ -33,7 +33,7 @@ terraform.rc
 # PyCharm
 
 .idea/*
-
+.idea
 
 # Environment
 
