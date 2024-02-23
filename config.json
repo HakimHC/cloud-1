@@ -19,6 +19,6 @@
 
   "terraform": {
     "base_dir": "./terraform",
-    "apply": false
+    "apply": true
   }
 }
