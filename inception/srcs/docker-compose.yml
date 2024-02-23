@@ -1,0 +1,134 @@
+version: '3'
+
+services:
+  mariadb:
+    build: ./requirements/mariadb
+    env_file:
+      - .env
+    volumes: 
+      - "database:/var/lib/mysql"
+    networks:
+      - wordpress-mariadb
+      - adminer-mariadb
+      - grafana-mariadb
+    restart: always
+
+  wordpress:
+    build: ./requirements/wordpress
+    env_file:
+      - .env
+    volumes: 
+      - "wp:/wordpress"
+      - "adminer:/adminer"
+    networks:
+      - wordpress-nginx
+      - wordpress-mariadb
+      - wordpress-redis
+      - ftp
+    restart: always
+    depends_on:
+      - mariadb
+      - redis
+
+  nginx:
+    build: ./requirements/nginx
+    ports:
+      - "443:443"
+    env_file:
+      - .env
+    volumes: 
+      - "wp:/wordpress"
+      - "adminer:/adminer"
+    networks:
+      - wordpress-nginx
+      - grafana-nginx
+      - adminer-nginx
+      - ftp
+      - webservers
+    restart: always
+    depends_on:
+      - wordpress
+
+  redis:
+    build: ./requirements/bonus/redis
+    env_file:
+      - .env
+    volumes: 
+      - "wp:/wordpress"
+    networks:
+      - wordpress-redis
+    restart: always
+
+  adminer:
+    build: ./requirements/bonus/adminer
+    volumes: 
+      - "adminer:/adminer"
+    networks:
+      - adminer-nginx
+      - adminer-mariadb
+    env_file:
+      - .env
+    restart: always
+
+  vsftpd:
+    build: ./requirements/bonus/vsftpd
+    ports:
+      - "21:21"
+      - "21000-21100:21000-21100"
+    env_file:
+      - .env
+    volumes: 
+      - "wp:/wordpress"
+    networks:
+      - ftp
+    restart: always
+    depends_on:
+      - wordpress
+
+  grafana:
+    build: ./requirements/bonus/grafana
+    env_file:
+      - .env
+    networks:
+      - grafana-mariadb
+      - grafana-nginx
+    restart: always
+    depends_on:
+      - mariadb
+
+  static-page:
+    build: ./requirements/bonus/static-page
+    restart: always
+    networks:
+      - webservers
+
+networks:
+  wordpress-nginx:
+  wordpress-redis:
+  wordpress-mariadb:
+  grafana-mariadb:
+  grafana-nginx:
+  adminer-nginx:
+  adminer-mariadb:
+  webservers:
+  ftp:
+
+volumes:
+  database:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/hakahmed/data/db
+      o: bind
+  wp:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/hakahmed/data/wordpress
+      o: bind
+  adminer:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/hakahmed/data/adminer
+      o: bind
