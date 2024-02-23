@@ -23,4 +23,6 @@ COPY . /app
 
 WORKDIR /app
 
-CMD ["python3", "main.py"]
+RUN tar -czvf ./inception.tar.gz ./inception
+
+CMD ["python3", "src/main.py"]

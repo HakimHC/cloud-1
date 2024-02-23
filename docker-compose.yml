@@ -1,9 +1,14 @@
 version: '3'
 
 services:
-  main:
+  deploy:
     build: ./
     env_file:
       - ./.env
     volumes:
-      - "./azure_vm:/app/azure_vm"
+      - type: bind
+        source: ${HOME}/.ssh
+        target: /root/.ssh
+      - type: bind
+        source: ./terraform
+        target: /app/terraform
