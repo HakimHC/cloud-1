@@ -19,9 +19,15 @@
         src: ../.env.inception
         dest: /inception/srcs/.env
 
-    # TODO: make it 'safer' by not replacing localhost rather replacing the line
-    - name: "Replace the host variable in environment"
-      ansible.builtin.shell: sed -i "s/localhost/{{ ansible_host }}/" /inception/srcs/.env
+#    # TODO: make it 'safer' by not replacing localhost rather replacing the line
+#    - name: "Replace the host variable in environment"
+#      ansible.builtin.shell: sed -i "s/localhost/{{ ansible_host }}/" /inception/srcs/.env
+
+    - name: "Replace host in environment"
+      ansible.builtin.shell: |
+        grep -q '^DOMAIN_NAME=' /inception/srcs/.env && sed -i "/^DOMAIN_NAME=/c\DOMAIN_NAME={{ ansible_host }}" .env.inception || echo "DOMAIN_NAME={{ ansible_host }}" >> /inception/srcs/.env
+      args:
+        executable: /bin/bash
 
     - name: "Install the 'make' binary"
       ansible.builtin.apt:
@@ -33,6 +39,3 @@
 
     - name: "Start the application"
       ansible.builtin.shell: make dt -C /inception
-      register: out
-
-    - debug: var=out.stdout_lines
