@@ -4,6 +4,7 @@ from ansible import AnsibleHandler
 from inventory import InventoryHandler
 
 import logging
+import time
 
 
 class Deployer:
@@ -19,6 +20,9 @@ class Deployer:
         self.inventory.build_inventory(
             hosts=hosts
         )
+        # TODO: obviously change it to a ping or something like that
+        logging.info('Waiting for Terraform hosts')
+        time.sleep(2)
         self.ansible.run_playbook(
             inventory_path=self.inventory.inventory_path
         )

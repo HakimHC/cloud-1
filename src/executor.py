@@ -20,6 +20,7 @@ class CommandExecutor:
             ret = CommandExecutor.__exec(commands, capture)
             if ret.get('exit_code') == 0:
                 break
+            logging.warning(f'Retrying commands: {commands}')
             i += 1
 
         if i == retries:
@@ -54,5 +55,6 @@ class CommandExecutor:
             ret["exit_code"] = result.returncode
 
             if result.returncode != 0:
+                logging.error(f'Command execution failed ({command})')
                 return ret
         return ret
